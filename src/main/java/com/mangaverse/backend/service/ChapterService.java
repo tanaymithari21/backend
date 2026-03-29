@@ -9,6 +9,7 @@ import com.mangaverse.backend.repository.ChapterRepository;
 import com.mangaverse.backend.repository.MangaRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class ChapterService {
 
     public ChapterDto addChapter(Long mangaId, ChapterDto dto) {
         Manga manga = mangaRepository.findById(mangaId)
-                .orElseThrow(() -> new RuntimeException("Manga not found"));
+                .orElseThrow(() -> new RuntimeException("Manga not found with id: " + mangaId));
 
         Chapter chapter = new Chapter();
         chapter.setManga(manga);
@@ -32,13 +33,16 @@ public class ChapterService {
         chapterRepository.save(chapter);
 
         List<String> imageUrls = dto.getImageUrls();
+        List<ChapterPage> pages = new ArrayList<>();
         for (int i = 0; i < imageUrls.size(); i++) {
             ChapterPage page = new ChapterPage();
             page.setChapter(chapter);
             page.setPageNumber(i + 1);
             page.setImageUrl(imageUrls.get(i));
-            chapterPageRepository.save(page);
+            pages.add(page);
         }
+        // Fix: batch save instead of one-by-one
+        chapterPageRepository.saveAll(pages);
 
         ChapterDto savedDto = new ChapterDto();
         savedDto.setNumber(chapter.getNumber());

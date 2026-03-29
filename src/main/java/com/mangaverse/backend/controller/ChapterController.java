@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/manga")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class ChapterController {
 
     private final ChapterService chapterService;

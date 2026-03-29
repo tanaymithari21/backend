@@ -1,13 +1,13 @@
 package com.mangaverse.backend.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "genre")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Genre {
 
     @Id
@@ -16,6 +16,7 @@ public class Genre {
 
     private String name;
 
+    // Fix: needed by MangaService → genreRepository.save(new Genre(name))
     public Genre(String name) {
         this.name = name;
     }
